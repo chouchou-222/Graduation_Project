@@ -1,0 +1,21 @@
+# Ignore large datasets under data/
+/data/*
+!/data/.gitkeep
+!/data/**/.gitkeep
+
+# Training artifacts / checkpoints
+/model_weights/
+/lightning_logs/
+/outputs/
+
+# Python cache
+**/__pycache__/
+*.py[cod]
+
+# Jupyter / editor noise
+.ipynb_checkpoints/
+.vscode/
+
+# Common experiment logs
+wandb/
+runs/

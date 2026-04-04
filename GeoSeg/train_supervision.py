@@ -199,7 +199,27 @@ def main():
                                           save_last=config.save_last, mode=config.monitor_mode,
                                           dirpath=config.weights_path,
                                           filename=config.weights_name)
+    loggers = []
     logger = CSVLogger('lightning_logs', name=config.log_name)
+    loggers.append(logger)
+    # Optional Weights & Biases logger
+    try:
+        from pytorch_lightning.loggers import WandbLogger
+        wandb_project = getattr(config, "wandb_project", None) or os.environ.get("WANDB_PROJECT")
+        if wandb_project:
+            wandb_entity = getattr(config, "wandb_entity", None) or os.environ.get("WANDB_ENTITY")
+            wandb_name = getattr(config, "wandb_name", None) or getattr(config, "weights_name", None)
+            wandb_tags = getattr(config, "wandb_tags", None)
+            wandb_logger = WandbLogger(
+                project=wandb_project,
+                entity=wandb_entity,
+                name=wandb_name,
+                tags=wandb_tags,
+                save_dir="lightning_logs",
+            )
+            loggers.append(wandb_logger)
+    except Exception:
+        pass
 
     model = Supervision_Train(config)
 
@@ -208,8 +228,8 @@ def main():
 
     trainer = pl.Trainer(devices=config.gpus,max_epochs=config.max_epoch, accelerator='gpu',
                          check_val_every_n_epoch=config.check_val_every_n_epoch,
-                         callbacks=[checkpoint_callback], strategy=config.strategy,
-                         resume_from_checkpoint=config.resume_ckpt_path, logger=logger,progress_bar_refresh_rate=2)
+                          callbacks=[checkpoint_callback], strategy=config.strategy,
+                         resume_from_checkpoint=config.resume_ckpt_path, logger=loggers,progress_bar_refresh_rate=2)
     trainer.fit(model=model)
 
 

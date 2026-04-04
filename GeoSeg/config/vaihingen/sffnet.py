@@ -1,7 +1,7 @@
 from torch.utils.data import DataLoader
 from GeoSeg.geoseg.losses.useful_loss import Loss
 from GeoSeg.geoseg.datasets.vaihingen_dataset import *
-from catalyst.contrib.nn.optimizers import Lookahead
+from GeoSeg.geoseg.optim import Lookahead
 import catalyst.utils as utils
 from GeoSeg.geoseg.models.SFFNet.SFFNet import SFFNet
 
@@ -31,6 +31,10 @@ gpus = [0]
 strategy = None
 pretrained_ckpt_path = None
 resume_ckpt_path = None
+wandb_project = None
+wandb_entity = None
+wandb_name = None
+wandb_tags = None
 
 
 
